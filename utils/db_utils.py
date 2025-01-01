@@ -1,7 +1,7 @@
 from firebase_functions import https_fn, firestore_fn, scheduler_fn
 from firebase_admin import initialize_app, firestore
 import google.cloud.firestore
-
+from time_utils import convert_to_12_hour_format
 def get_data_from_document(collection: str, document: str) -> any:
     """
     Reads data from a Firestore document.
@@ -60,3 +60,37 @@ def write_data_to_document(collection: str, doc_id: str, data: dict, merge: bool
         print(f"Document '{doc_id}' written to collection '{collection}' successfully.")
     except Exception as e:
         print(f"Error writing to document '{doc_id}' in collection '{collection}': {e}")
+
+def batch_write_month(collection_name: str, data: dict) -> None:
+
+    db = firestore.client()
+    batch = db.batch()
+
+    try:
+
+        for prayer_day in data:
+            document_id = prayer_day.date
+            doc_ref = db.collection(collection_name).document(document_id)
+
+            # Convert times to 12-hour format
+            prayer_times_data = {
+                'fajr': convert_to_12_hour_format(prayer_day.fajr),
+                'sunrise': convert_to_12_hour_format(prayer_day.sunrise),
+                'dhuhr': convert_to_12_hour_format(prayer_day.dhuhr),
+                'asr': convert_to_12_hour_format(prayer_day.asr),
+                'maghrib': convert_to_12_hour_format(prayer_day.maghrib),
+                'isha': convert_to_12_hour_format(prayer_day.isha),
+                'date': prayer_day.date
+            }
+
+            batch.set(doc_ref, prayer_times_data)
+        
+        batch.commit()
+        print(f"Uploaded prayer times for {len(data)} days to Firebase.")
+
+    except Exception as e:
+        print(f"Error writing to Firestore: {e}")
+        return
+
+
+
