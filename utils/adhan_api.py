@@ -142,7 +142,8 @@ class PrayerTimesApi():
             date = datetime.strptime(day['date']['gregorian']['date'], '%d-%m-%Y')
             prayer_days.append(DailyPrayerTimes(
                 date = date.strftime('%Y-%m-%d'),
-                fajr = strip_timezone(prayer_times['Sunrise']),
+                fajr = strip_timezone(prayer_times['Fajr']),
+                sunrise = strip_timezone(prayer_times['Sunrise']),
                 dhuhr = strip_timezone(prayer_times['Dhuhr']),
                 asr = strip_timezone(prayer_times['Asr']),
                 maghrib = strip_timezone(prayer_times['Maghrib']),

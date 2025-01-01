@@ -104,4 +104,3 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
         constants.FIELD1: data[constants.FIELD1] + 1,
         constants.FIELD2: firestore.SERVER_TIMESTAMP
         })
-    
