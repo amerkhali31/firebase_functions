@@ -1,8 +1,8 @@
-from models import Announcement
-from models import PrayerTime
-from models import ScraperResult
+from utils.models import Announcement
+from utils.models import PrayerTime
+from utils.models import ScraperResult
 from bs4 import BeautifulSoup
-import constants
+import utils.constants as constants
 import requests
 import re
 

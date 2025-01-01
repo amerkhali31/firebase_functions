@@ -1,7 +1,8 @@
 from firebase_functions import https_fn, firestore_fn, scheduler_fn
 from firebase_admin import initialize_app, firestore
 import google.cloud.firestore
-from time_utils import convert_to_12_hour_format
+from utils.time_utils import convert_to_12_hour_format
+
 def get_data_from_document(collection: str, document: str) -> any:
     """
     Reads data from a Firestore document.

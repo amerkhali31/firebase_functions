@@ -21,7 +21,7 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
     update_time = get_data(constants.TEST_COLLECTION, constants.TEST_2_DOCUMENT)
     if compare_times(update_time):
         set_data(constants.TEST_COLLECTION, "scrape_update_test", {"counter": 1})
-        print("It is midnight.")
+
         today = date.today()
         month = today.month
         year = today.year

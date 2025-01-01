@@ -1,10 +1,10 @@
 import requests
-import constants
+import utils.constants as constants
 from typing import Any
 from typing import Optional
 from datetime import datetime
-from models import DailyPrayerTimes
-from time_utils import strip_timezone
+from utils.models import DailyPrayerTimes
+from utils.time_utils import strip_timezone
 
 class PrayerTimesApi():
 
