@@ -1,8 +1,3 @@
-# Welcome to Cloud Functions for Firebase for Python!
-# To get started, simply uncomment the below code or create your own.
-# Deploy with `firebase deploy`
-# Manually run the scheduled tasks here: https://console.cloud.google.com/cloudscheduler
-
 from firebase_functions import scheduler_fn, options
 from firebase_admin import initialize_app, firestore
 from datetime import date
@@ -16,13 +11,16 @@ from utils.rng_utils import generate_daily_random_number
 
 app = initialize_app()
 
+# Deploy with `firebase deploy`
+# Manually run the scheduled tasks here: https://console.cloud.google.com/cloudscheduler
 
-# Run once a day at midnight, to clean up inactive users.
 @scheduler_fn.on_schedule(schedule="* * * * *", timeout_sec=30, memory=options.MemoryOption.MB_256)
 def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
 
     # Update Firebase if it is midnight
-    if compare_times({"midnight": "12:00 AM"}):
+    update_time = get_data(constants.TEST_COLLECTION, constants.TEST_2_DOCUMENT)
+    if compare_times(update_time):
+        set_data(constants.TEST_COLLECTION, "scrape_update_test", {"counter": 1})
         print("It is midnight.")
         today = date.today()
         month = today.month
@@ -89,11 +87,6 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
 
         # monthly times        
         batch_write_month(constants.MONTH_COLLECTION, monthly_adhan_times)
-        
-    else:
-        print("It is not midnight.")
-        return
-
 
     # Get the notification times
     notification_times = get_data(constants.NOTIFICATION_TIMES_COLLECTION, constants.NOTIFICATION_TIMES_DOCUMENT)

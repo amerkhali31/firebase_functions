@@ -45,7 +45,8 @@ TEST_COLLECTION = "z_functions_tests"
 TEST_1_DOCUMENT = "every_minute_test"
 FIELD1 = "counter"
 FIELD2 = "time"
-
+TEST_2_DOCUMENT = "scrape_test"
+FIELD3 = "time"
 # Adhan API
 API_URL = 'https://api.aladhan.com'
 PRAYER_TIMES_ENDPOINT = '/v1/timings'
