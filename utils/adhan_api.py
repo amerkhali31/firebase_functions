@@ -97,7 +97,7 @@ class PrayerTimesApi():
         ) -> DailyPrayerTimes:
 
         #print(f'Getting prayer times for {date} at {parameters.latitude},{parameters.longitude} using {parameters.method} method')
-        url = f'{constants.ALADHAN_API.API_URL}{constants.ALADHAN_API.PRAYER_TIMES_ENDPOINT}/{date}'
+        url = f'{constants.API_URL}{constants.PRAYER_TIMES_ENDPOINT}/{date}'
         response = requests.get(url, parameters.__dict__)
 
         # Raise an exception for HTTP errors
@@ -125,8 +125,8 @@ class PrayerTimesApi():
         ) -> list[DailyPrayerTimes]:
 
         #print(f'Getting prayer times for {year}-{month} at {parameters.latitude},{parameters.longitude} using {parameters.method} method')
-        endpoint = constants.ALADHAN_API.MONTHLY_PRAYER_TIMES_ENDPOINT.format(year=year, month=month)
-        url = f'{constants.ALADHAN_API.API_URL}{endpoint}'
+        endpoint = constants.MONTHLY_PRAYER_TIMES_ENDPOINT.format(year=year, month=month)
+        url = f'{constants.API_URL}{endpoint}'
         response = requests.get(url, parameters.__dict__)
 
         # Raise an exception for HTTP errors
