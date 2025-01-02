@@ -1,6 +1,6 @@
 from firebase_functions import scheduler_fn, options
 from firebase_admin import initialize_app, firestore
-from datetime import date
+from datetime import date, datetime
 import utils.constants as constants
 from utils.message_utils import send_topic_notification
 from utils.time_utils import compare_times_in_timezone as compare_times, process_time_string, subtract_15_minutes, convert_to_12_hour_format
@@ -8,6 +8,7 @@ from utils.db_utils import get_data_from_document as get_data, write_data_to_doc
 from utils.adhan_api import PrayerTimesApi
 from utils.scraper import scrape_magr
 from utils.rng_utils import generate_daily_random_number
+from zoneinfo import ZoneInfo
 
 app = initialize_app()
 
@@ -17,10 +18,15 @@ app = initialize_app()
 @scheduler_fn.on_schedule(schedule="* * * * *", timeout_sec=30, memory=options.MemoryOption.MB_256)
 def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
 
-    # Update Firebase if it is midnight
-    update_time = get_data(constants.TEST_COLLECTION, constants.TEST_2_DOCUMENT)
-    if compare_times(update_time):
-        set_data(constants.TEST_COLLECTION, "scrape_update_test", {"counter": 1})
+    # Get the time that we want to update firebase
+    update_time = get_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.UPDATE_DOCUMENT)[constants.UPDATE_FIELD_2]
+
+    # Check if it is time to update firebase
+    if compare_times({constants.UPDATE_FIELD_2: update_time}):
+
+        # Update the update_firebase document to write to it the last time it was updated
+        update_dict = {constants.UPDATE_FIELD: firestore.SERVER_TIMESTAMP, constants.UPDATE_FIELD_2: update_time}
+        set_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.UPDATE_DOCUMENT, update_dict)
 
         today = date.today()
         month = today.month
@@ -33,6 +39,7 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
             school=PrayerTimesApi.School.SHAFI
         )
 
+        # Get the monthly and daily prayer times
         monthly_adhan_times = PrayerTimesApi.get_monthly_prayer_times(year, month, adhan_api_parameters)
         daily_adhan_times = PrayerTimesApi.get_daily_prayer_times(today, adhan_api_parameters)
         
@@ -41,6 +48,7 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
         daily_iqama_times = {prayer.name.lower(): prayer.time for prayer in scraper_result.prayer_times}  # Convert to dict
         announcements = scraper_result.announcements
         
+        # Format the times
         prayer_times = {
             'jumaa_khutba': process_time_string('', daily_iqama_times["friday khutbah"]),
             'jumaa_salah': process_time_string('', daily_iqama_times["friday salat"]),
@@ -99,8 +107,8 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
         send_topic_notification(notification_topic)
 
     # Update the counter in the test document
-    data = get_data(constants.TEST_COLLECTION, constants.TEST_1_DOCUMENT)
-    set_data(constants.TEST_COLLECTION, constants.TEST_1_DOCUMENT, {
-        constants.FIELD1: data[constants.FIELD1] + 1,
-        constants.FIELD2: firestore.SERVER_TIMESTAMP
+    data = get_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.INVOCATIONS_DOCUMENT)
+    set_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.INVOCATIONS_DOCUMENT, {
+        constants.INVOCATIONS_FIELD_2: data[constants.INVOCATIONS_FIELD_2] + 1,
+        constants.INVOCATIONS_FIELD: firestore.SERVER_TIMESTAMP
         })

@@ -27,13 +27,11 @@ def get_data_from_document(collection: str, document: str) -> any:
     if not document.exists:
         print("Document does not exist.")
         return
-    else: print("Document exists.")
 
     # Get the document data
     data = document.to_dict()
 
     return data
-
 
 def write_data_to_document(collection: str, doc_id: str, data: dict, merge: bool = False) -> None:
     """
@@ -58,19 +56,21 @@ def write_data_to_document(collection: str, doc_id: str, data: dict, merge: bool
         else:
             doc_ref.set(data)  # Overwrites the document
 
-        print(f"Document '{doc_id}' written to collection '{collection}' successfully.")
+        #print(f"Document '{doc_id}' written to collection '{collection}' successfully.")
     except Exception as e:
         print(f"Error writing to document '{doc_id}' in collection '{collection}': {e}")
 
-def batch_write_month(collection_name: str, data: dict) -> None:
+def batch_write_month(collection_name: str, data: list) -> None:
 
     db = firestore.client()
     batch = db.batch()
+    upserted_ids = set() 
 
     try:
 
         for prayer_day in data:
             document_id = prayer_day.date
+            upserted_ids.add(document_id)
             doc_ref = db.collection(collection_name).document(document_id)
 
             # Convert times to 12-hour format
@@ -87,11 +87,19 @@ def batch_write_month(collection_name: str, data: dict) -> None:
             batch.set(doc_ref, prayer_times_data)
         
         batch.commit()
-        print(f"Uploaded prayer times for {len(data)} days to Firebase.")
+        #print(f"Uploaded prayer times for {len(data)} days to Firebase.")
+
+        # Step 2: Delete non-upserted documents
+        existing_docs = db.collection(collection_name).stream()
+        delete_batch = db.batch()
+
+        for doc in existing_docs:
+            if doc.id not in upserted_ids:
+                delete_batch.delete(doc.reference)
+
+        delete_batch.commit()  # Commit the deletions
+        #print(f"Deleted documents not in the upserted list from '{collection_name}'.")
 
     except Exception as e:
-        print(f"Error writing to Firestore: {e}")
+        print(f"Error writing to Firestore from inside batch_write_month: {e}")
         return
-
-
-
