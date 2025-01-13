@@ -79,7 +79,7 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
             },
             'jumaa_khutba': subtract_minutes(prayer_times['jumaa_khutba'], 20),
             'jumaa_salah':  subtract_minutes(prayer_times['jumaa_salah'], 40),
-            'membership_renewal': "8:00 AM"
+            'membership_renewal': "8:00"
         }
 
         # announcements
