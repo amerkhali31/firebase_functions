@@ -62,6 +62,6 @@ MONTHLY_PRAYER_TIMES_ENDPOINT = '/v1/calendar/{year}/{month}'
 
 # MAGR
 FRONT_PAGE_URL = 'https://magr.org/wp-json/wp/v2/pages/2429?_fields=content'
-LATITUDE = '42.235857'
-LONGITUDE = '-89.000643'
+LATITUDE = '42.2843'
+LONGITUDE = '-89.0125'
 PRAYER_NAMES = ['Fajr', 'Zuhr', 'Asr', 'Maghrib', 'Isha', 'Friday Khutbah', 'Friday Salat']
