@@ -77,8 +77,8 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
                 for prayer, time in prayer_times.items()
                 if prayer.endswith("_iqama")  # Subtract 15 minutes from iqama times
             },
-            'jumaa_khutba': subtract_minutes(prayer_times['jumaa_khutba'], 20),
-            'jumaa_salah':  subtract_minutes(prayer_times['jumaa_salah'], 40),
+            'jumaa_khutba': subtract_minutes(prayer_times['jumaa_khutba'], 60),
+            'jumaa_salah':  subtract_minutes(prayer_times['jumaa_salah'], 60),
             'membership_renewal': "8:00"
         }
 
@@ -117,10 +117,10 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
         
 
         # If the Match is For Membership Renewal
-        elif notification_topic == constants.NOTIFICATION_TIMES_FIELD[13]:
+        elif notification_topic == constants.NOTIFICATION_TIMES_FIELD[12]:
 
             # Check if it is in the correct date range to send this notice
-            if datetime(2025, 1, 1) <= datetime.now() <= datetime(2025, 1, 20):
+            if datetime(2025, 1, 1) <= datetime.now() <= datetime(2025, 1, 30):
                 send_topic_notification(notification_topic)
 
         # If the Match is for a Normal Daily Prayer

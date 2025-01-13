@@ -8,13 +8,16 @@ def send_topic_notification(topic):
     body = ''
     ios_sound = 'default'
     android_sound = 'default'
-
-    if reminder_type == 'Adhan':
+    if prayer == "Jumaa":
+        body = f'{prayer} {reminder_type} is in 1 Hour'
+        ios_sound = "iqama.wav"
+        android_sound = "iqama"
+    elif reminder_type == 'Adhan':
         body = f"It's time for {prayer} prayer"
         ios_sound = 'adhan.wav'
         android_sound = 'adhan'
     else:
-        body = f"{prayer} Iqama is in 20 minutes"
+        body = f"{prayer} Iqama is in 20 Minutes"
         ios_sound = 'iqama.wav'
         android_sound = 'iqama'
 
