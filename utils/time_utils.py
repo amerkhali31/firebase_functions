@@ -61,9 +61,9 @@ def process_time_string(base_time, time_string):
         return time_obj.strftime("%H:%M")
 
 # Function to subtract 15 minutes from a time string
-def subtract_15_minutes(time_string):
+def subtract_minutes(time_string, minutes_to_subtract):
     time_obj = datetime.strptime(time_string, "%H:%M")
-    new_time_obj = time_obj - timedelta(minutes=15)
+    new_time_obj = time_obj - timedelta(minutes=minutes_to_subtract)
     return new_time_obj.strftime("%H:%M")
 
 def convert_to_12_hour_format(time_string):

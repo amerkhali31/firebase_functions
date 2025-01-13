@@ -3,7 +3,7 @@ from firebase_admin import initialize_app, firestore
 from datetime import date, datetime
 import utils.constants as constants
 from utils.message_utils import send_topic_notification
-from utils.time_utils import compare_times_in_timezone as compare_times, process_time_string, subtract_15_minutes, convert_to_12_hour_format
+from utils.time_utils import compare_times_in_timezone as compare_times, process_time_string, subtract_minutes, convert_to_12_hour_format
 from utils.db_utils import get_data_from_document as get_data, write_data_to_document as set_data, batch_write_month
 from utils.adhan_api import PrayerTimesApi
 from utils.scraper import scrape_magr
@@ -73,7 +73,7 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
                 if prayer.endswith("_adhan")  # Keep adhan times as is
             },
             **{
-                prayer: subtract_15_minutes(time)
+                prayer: subtract_minutes(time, 20)
                 for prayer, time in prayer_times.items()
                 if prayer.endswith("_iqama")  # Subtract 15 minutes from iqama times
             }
