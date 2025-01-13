@@ -15,6 +15,8 @@ def send_topic_notification(topic):
         android_sound = 'adhan'
     else:
         body = f"{prayer} Iqama is in 20 minutes"
+        ios_sound = 'iqama.wav'
+        android_sound = 'iqama'
 
     message = messaging.Message(
         topic=topic,
