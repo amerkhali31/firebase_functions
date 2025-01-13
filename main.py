@@ -76,7 +76,10 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
                 prayer: subtract_minutes(time, 20)
                 for prayer, time in prayer_times.items()
                 if prayer.endswith("_iqama")  # Subtract 15 minutes from iqama times
-            }
+            },
+            'jumaa_khutba': subtract_minutes(prayer_times['jumaa_khutba'], 20),
+            'jumaa_salah':  subtract_minutes(prayer_times['jumaa_salah'], 40),
+            'membership_renewal': "8:00 AM"
         }
 
         # announcements
@@ -102,9 +105,27 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
     # Compare the current time to the notification times
     notification_topic = compare_times(notification_times)
 
-    # Send a notification if a match is found
+    # If there is a match to a time for a notification
     if notification_topic:
-        send_topic_notification(notification_topic)
+
+        # If the match is to a jumaa notification
+        if notification_topic in constants.NOTIFICATION_TIMES_FIELD[10:12]:
+
+            # Only Send the Notification if it is Friday
+            if datetime.now().strftime('%A') == "Friday":
+                send_topic_notification(notification_topic)
+        
+
+        # If the Match is For Membership Renewal
+        elif notification_topic == constants.NOTIFICATION_TIMES_FIELD[13]:
+
+            # Check if it is in the correct date range to send this notice
+            if datetime(2025, 1, 1) <= datetime.now() <= datetime(2025, 1, 20):
+                send_topic_notification(notification_topic)
+
+        # If the Match is for a Normal Daily Prayer
+        else:
+            send_topic_notification(notification_topic)
 
     # Update the counter in the test document
     data = get_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.INVOCATIONS_DOCUMENT)

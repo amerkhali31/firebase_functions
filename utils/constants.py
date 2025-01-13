@@ -12,6 +12,9 @@ NOTIFICATION_TIMES_FIELD = [
     'maghrib_iqama',
     'isha_adhan',
     'isha_iqama',
+    "jumaa_khutba",
+    "jumaa_salah",
+    "membership_renewal"
 ]
 
 TODAY_COLLECTION = "todays_prayer_times"

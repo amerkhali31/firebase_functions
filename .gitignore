@@ -4,3 +4,5 @@ venv/
 utils/__pycache__/
 utils/__pycache__*
 *.pyc
+utils/test_script.py
+magr*.json
