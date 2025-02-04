@@ -24,10 +24,6 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
     # Check if it is time to update firebase
     if compare_times({constants.UPDATE_FIELD_2: update_time}):
 
-        # Update the update_firebase document to write to it the last time it was updated
-        update_dict = {constants.UPDATE_FIELD: firestore.SERVER_TIMESTAMP, constants.UPDATE_FIELD_2: update_time}
-        set_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.UPDATE_DOCUMENT, update_dict)
-
         today = date.today()
         month = today.month
         year = today.year
@@ -98,6 +94,10 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
 
         # monthly times        
         batch_write_month(constants.MONTH_COLLECTION, monthly_adhan_times)
+
+        # Update the update_firebase document to write to it the last time it was updated
+        update_dict = {constants.UPDATE_FIELD: firestore.SERVER_TIMESTAMP, constants.UPDATE_FIELD_2: update_time}
+        set_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.UPDATE_DOCUMENT, update_dict)
 
     # Get the notification times
     notification_times = get_data(constants.NOTIFICATION_TIMES_COLLECTION, constants.NOTIFICATION_TIMES_DOCUMENT)
