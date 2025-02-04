@@ -17,7 +17,7 @@ def scrape_magr():
     }
 
     # Make a GET request to fetch the JSON data
-    response = requests.get(constants.FRONT_PAGE_URL)
+    response = requests.get(constants.FRONT_PAGE_URL, headers=constants.HEADERS)
 
     # Raise an exception for HTTP errors
     response.raise_for_status()

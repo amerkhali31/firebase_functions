@@ -16,10 +16,12 @@ def send_topic_notification(topic):
         body = f"It's time for {prayer} prayer"
         ios_sound = 'adhan.wav'
         android_sound = 'adhan'
-    else:
+    elif reminder_type == 'Iqama':
         body = f"{prayer} Iqama is in 20 Minutes"
         ios_sound = 'iqama.wav'
         android_sound = 'iqama'
+    else:
+        body = f"You can renew your membership now if you haven't already."
 
     message = messaging.Message(
         topic=topic,

@@ -58,6 +58,7 @@ FIELD1 = "counter"
 FIELD2 = "time"
 TEST_2_DOCUMENT = "scrape_test"
 FIELD3 = "time"
+
 # Adhan API
 API_URL = 'https://api.aladhan.com'
 PRAYER_TIMES_ENDPOINT = '/v1/timings'
@@ -68,3 +69,8 @@ FRONT_PAGE_URL = 'https://magr.org/wp-json/wp/v2/pages/2429?_fields=content'
 LATITUDE = '42.2843'
 LONGITUDE = '-89.0125'
 PRAYER_NAMES = ['Fajr', 'Zuhr', 'Asr', 'Maghrib', 'Isha', 'Friday Khutbah', 'Friday Salat']
+
+# Hack
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+}
