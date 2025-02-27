@@ -15,15 +15,15 @@ app = initialize_app()
 
 # Deploy with `firebase deploy`
 # Manually run the scheduled tasks here: https://console.cloud.google.com/cloudscheduler
-
 @scheduler_fn.on_schedule(schedule="* * * * *", timeout_sec=30, memory=options.MemoryOption.MB_256)
 def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
 
     # Get the time that we want to update firebase
-    update_time = get_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.UPDATE_DOCUMENT)[constants.UPDATE_FIELD_2]
+    update_time = get_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.UPDATE_DOCUMENT)
+    del update_time["last_updated"]
 
     # Check if it is time to update firebase
-    if compare_times({constants.UPDATE_FIELD_2: update_time}):
+    if compare_times(update_time):
 
         today = date.today()
         month = today.month
@@ -118,8 +118,7 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
 
         # If the Match is for a Normal Daily Prayer
         else:
-            pass
-            #send_topic_notification(notification_topic)
+            send_topic_notification(notification_topic)
 
     # Update the counter in the test document
     data = get_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.INVOCATIONS_DOCUMENT)

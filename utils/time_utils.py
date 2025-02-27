@@ -46,6 +46,7 @@ def compare_times_in_timezone(fields: dict, timezone: str = "US/Central") -> str
 def strip_timezone(time) -> str:
     return re.sub(r' \(.*\)$', '', time)
 
+
 def process_time_string(base_time, time_string):
 
     # Check if the time string is an offset from the base time
@@ -58,6 +59,7 @@ def process_time_string(base_time, time_string):
         return new_time_obj.strftime("%I:%M %p")
     else:
         return time_string
+
 
 # Function to subtract 15 minutes from a time string
 def subtract_minutes(time_string, minutes_to_subtract):
