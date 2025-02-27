@@ -4,7 +4,7 @@ from datetime import date, datetime
 import utils.constants as constants
 from utils.message_utils import send_topic_notification
 from utils.time_utils import compare_times_in_timezone as compare_times, process_time_string, subtract_minutes, convert_to_12_hour_format
-from utils.db_utils import get_data_from_document as get_data, write_data_to_document as set_data, batch_write_month
+from utils.db_utils import get_data_from_document as get_data, write_data_to_document as set_data, batch_write_month, get_today_times, update_monthly_storage
 from utils.adhan_api import PrayerTimesApi
 from utils.scraper import scrape_magr
 from utils.rng_utils import generate_daily_random_number
@@ -29,16 +29,8 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
         month = today.month
         year = today.year
 
-        adhan_api_parameters = PrayerTimesApi.Parameters(
-            latitude=constants.LATITUDE,
-            longitude=constants.LONGITUDE,
-            method=PrayerTimesApi.Methods.ISLAMIC_SOCIETY_OF_NORTH_AMERICA,
-            school=PrayerTimesApi.School.SHAFI
-        )
-
         # Get the monthly and daily prayer times
-        monthly_adhan_times = PrayerTimesApi.get_monthly_prayer_times(year, month, adhan_api_parameters)
-        daily_adhan_times = PrayerTimesApi.get_daily_prayer_times(today, adhan_api_parameters)
+        daily_adhan_times = get_today_times()
         
         # Get Today's iqama times and announcements
         scraper_result = scrape_magr()
@@ -94,7 +86,7 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
         set_data(constants.NOTIFICATION_TIMES_COLLECTION, constants.NOTIFICATION_TIMES_DOCUMENT, formatted_times)
 
         # monthly times        
-        batch_write_month(constants.MONTH_COLLECTION, monthly_adhan_times)
+        update_monthly_storage()
 
         # Update the update_firebase document to write to it the last time it was updated
         update_dict = {constants.UPDATE_FIELD: firestore.SERVER_TIMESTAMP, constants.UPDATE_FIELD_2: update_time}

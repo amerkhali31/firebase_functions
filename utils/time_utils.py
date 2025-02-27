@@ -41,24 +41,34 @@ def compare_times_in_timezone(fields: dict, timezone: str = "US/Central") -> str
     except Exception as e:
         print("Error processing timezone or times:", e)
         return
-    
+
+
 def strip_timezone(time) -> str:
     return re.sub(r' \(.*\)$', '', time)
 
-# Function to process the iqama time string
+
 def process_time_string(base_time, time_string):
-    # Check if the time string is an offset from the base time
+    # Ensure base_time is converted to 24-hour format if it contains AM/PM
+    try:
+        base_time_obj = datetime.strptime(base_time, "%I:%M %p")  # 12-hour format
+    except ValueError:
+        base_time_obj = datetime.strptime(base_time, "%H:%M")  # 24-hour format
+
+    # Check if time_string is an offset (e.g., "10 minutes after prayer time")
     offset_match = re.match(r"(\d+)\s+minutes\s+after\s+prayer\s+time", time_string, re.IGNORECASE)
     if offset_match:
-        # Calculate the offset time
         offset_minutes = int(offset_match.group(1))
-        base_time_obj = datetime.strptime(base_time, "%H:%M")
-        new_time_obj = base_time_obj + timedelta(minutes=offset_minutes)
-        return new_time_obj.strftime("%H:%M")
-    else:
-        # Convert 12-hour time to 24-hour time
-        time_obj = datetime.strptime(time_string, "%I:%M %p")
-        return time_obj.strftime("%H:%M")
+        new_time_obj = base_time_obj + timedelta(minutes=offset_minutes)  # Add offset minutes
+        return new_time_obj.strftime("%H:%M")  # Convert back to string in 24-hour format
+
+    # Convert Iqama time (12-hour to 24-hour)
+    try:
+        time_obj = datetime.strptime(time_string, "%I:%M %p")  # Convert 12-hour format
+    except ValueError:
+        time_obj = datetime.strptime(time_string, "%H:%M")  # Convert 24-hour format
+
+    return time_obj.strftime("%H:%M")  # Return 24-hour formatted time
+
 
 # Function to subtract 15 minutes from a time string
 def subtract_minutes(time_string, minutes_to_subtract):
@@ -66,8 +76,16 @@ def subtract_minutes(time_string, minutes_to_subtract):
     new_time_obj = time_obj - timedelta(minutes=minutes_to_subtract)
     return new_time_obj.strftime("%H:%M")
 
+
 def convert_to_12_hour_format(time_string):
-    """Convert a 24-hour time string (HH:MM) to 12-hour format with AM/PM."""
-    time_obj = datetime.strptime(time_string, "%H:%M")
-    return time_obj.strftime("%I:%M %p")
+    """Convert any valid time string (24-hour or 12-hour) to 12-hour format with AM/PM."""
+    try:
+        # Try parsing as 24-hour format
+        time_obj = datetime.strptime(time_string, "%H:%M")
+    except ValueError:
+        # If that fails, try parsing as 12-hour format
+        time_obj = datetime.strptime(time_string, "%I:%M %p")
+    
+    return time_obj.strftime("%I:%M %p")  # Convert to 12-hour format with AM/PM
+
 

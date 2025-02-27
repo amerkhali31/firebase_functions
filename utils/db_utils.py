@@ -4,6 +4,7 @@ import google.cloud.firestore
 from utils.time_utils import convert_to_12_hour_format
 import utils.constants as constants
 from datetime import date, datetime
+from utils.models import DailyPrayerTimes
 
 def get_data_from_document(collection: str, document: str) -> any:
     """
@@ -106,6 +107,29 @@ def batch_write_month(collection_name: str, data: list) -> None:
     except Exception as e:
         print(f"Error writing to Firestore from inside batch_write_month: {e}")
         return
+
+def get_today_times():
+
+    today = date.today()
+    day = today.day
+    month = today.month
+    year = today.year
+
+    # Set Date Query parameters
+    first_day = f"{year}-{month:02d}-01"  # "YYYY-MM-01"
+    last_day = f"{year}-{month:02d}-31"   # "YYYY-MM-31"
+
+    db = firestore.client()
+    prayer_times_ref = db.collection(constants.NEW_TIMES_COLLECTION)
+
+    # Build Query
+    query = (prayer_times_ref.where(filter=firestore.FieldFilter("date", "==", f'{year}-{month:02d}-{day:02d}')))
+
+    documents = [doc.to_dict() for doc in query.stream()]
+    prayer_times = DailyPrayerTimes(**documents[0])
+
+    return prayer_times
+
 
 def update_monthly_storage():
 

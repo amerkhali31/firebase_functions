@@ -50,7 +50,8 @@ class DailyPrayerTimes():
         
         # Duha is usually not provided by the API, but it is always 15 minutes after sunrise
         if not duha:
-            sunrise_time = datetime.datetime.strptime(sunrise, '%H:%M')
-            duha = sunrise_time + datetime.timedelta(minutes=15)
-            duha = duha.strftime('%H:%M')
+            duha = '00:00'
         self.duha = duha
+
+    def __str__(self):
+        return f'{self.date} {self.fajr} {self.sunrise} {self.dhuhr} {self.asr} {self.maghrib} {self.isha}'
