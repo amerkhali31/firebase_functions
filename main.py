@@ -39,8 +39,8 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
         
         # Format the times
         prayer_times = {
-            'jumaa_khutba': process_time_string('', daily_iqama_times["friday khutbah"]),
-            'jumaa_salah': process_time_string('', daily_iqama_times["friday salat"]),
+            'jumaa_khutba': daily_iqama_times["friday khutbah"],
+            'jumaa_salah': daily_iqama_times["friday salat"],
             **{
                 f"{prayer.lower()}_adhan": getattr(daily_adhan_times, prayer.lower())
                 for prayer in ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"]
@@ -118,7 +118,8 @@ def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
 
         # If the Match is for a Normal Daily Prayer
         else:
-            send_topic_notification(notification_topic)
+            pass
+            #send_topic_notification(notification_topic)
 
     # Update the counter in the test document
     data = get_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.INVOCATIONS_DOCUMENT)

@@ -51,6 +51,9 @@ INVOCATIONS_FIELD_2 = "successful_invocations"
 UPDATE_DOCUMENT = "update_firebase"
 UPDATE_FIELD = "last_updated"
 UPDATE_FIELD_2 = "update_time"
+UPDATE_FIELD_3 = "update_time_2"
+UPDATE_FIELD_4 = "update_time_3"
+UPDATE_FIELD_5 = "update_time_4"
 
 TEST_COLLECTION = "z_functions_tests"
 TEST_1_DOCUMENT = "every_minute_test"
@@ -77,5 +80,7 @@ PRAYER_NAMES = ['Fajr', 'Zuhr', 'Asr', 'Maghrib', 'Isha', 'Friday Khutbah', 'Fri
 
 # Hack
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Accept": "application/json"
+
 }

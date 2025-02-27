@@ -164,11 +164,11 @@ def update_monthly_storage():
     for doc in documents:
         doc_id = doc["date"]
         upserted_ids.add(doc_id)
-        doc_ref = db.collection("Test_Collection_1").document(doc_id)
+        doc_ref = db.collection(constants.MONTH_COLLECTION).document(doc_id)
         batch.set(doc_ref, doc, merge=True)
     batch.commit()
 
-    existing_docs = db.collection("Test_Collection_1").stream()
+    existing_docs = db.collection(constants.MONTH_COLLECTION).stream()
     delete_batch = db.batch()
 
     for doc in existing_docs:
