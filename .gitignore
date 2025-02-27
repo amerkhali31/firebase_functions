@@ -1,8 +1,11 @@
 *.local
 venv/
-*__pycache__/
+*__pycache__/*
 utils/__pycache__/
 utils/__pycache__*
 *.pyc
 utils/test_script.py
 magr*.json
+manual_update.py
+tests2.py
+*.pdf

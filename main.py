@@ -10,6 +10,7 @@ from utils.scraper import scrape_magr
 from utils.rng_utils import generate_daily_random_number
 from zoneinfo import ZoneInfo
 
+
 app = initialize_app()
 
 # Deploy with `firebase deploy`

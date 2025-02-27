@@ -59,6 +59,11 @@ FIELD2 = "time"
 TEST_2_DOCUMENT = "scrape_test"
 FIELD3 = "time"
 
+NEW_TIMES_COLLECTION = "Adhan_Times_For_Year"
+
+# Islamic Finder
+PDF_PATH = '../month_pdfs'
+
 # Adhan API
 API_URL = 'https://api.aladhan.com'
 PRAYER_TIMES_ENDPOINT = '/v1/timings'

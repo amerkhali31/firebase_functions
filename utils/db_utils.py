@@ -2,6 +2,8 @@ from firebase_functions import https_fn, firestore_fn, scheduler_fn
 from firebase_admin import initialize_app, firestore
 import google.cloud.firestore
 from utils.time_utils import convert_to_12_hour_format
+import utils.constants as constants
+from datetime import date, datetime
 
 def get_data_from_document(collection: str, document: str) -> any:
     """
@@ -69,6 +71,7 @@ def batch_write_month(collection_name: str, data: list) -> None:
     try:
 
         for prayer_day in data:
+            print(prayer_day)
             document_id = prayer_day.date
             upserted_ids.add(document_id)
             doc_ref = db.collection(collection_name).document(document_id)
@@ -103,3 +106,49 @@ def batch_write_month(collection_name: str, data: list) -> None:
     except Exception as e:
         print(f"Error writing to Firestore from inside batch_write_month: {e}")
         return
+
+def update_monthly_storage():
+
+    # Connect to Firestore Database
+    db: google.cloud.firestore.Client = firestore.client()
+
+    # Connect to Collection hosting year of prayer times
+    prayer_times_ref = db.collection(constants.NEW_TIMES_COLLECTION)
+
+    # Get Date
+    today = date.today()
+    month = today.month
+    year = today.year
+
+    # Set Date Query parameters
+    first_day = f"{year}-{month:02d}-01"  # "YYYY-MM-01"
+    last_day = f"{year}-{month:02d}-31"   # "YYYY-MM-31"
+
+    # Build Query
+    query = (prayer_times_ref
+         .where(filter=firestore.FieldFilter("date", ">=", first_day))
+         .where(filter=firestore.FieldFilter("date", "<=", last_day)))
+
+    # Execute Query
+    documents = [doc.to_dict() for doc in query.stream()]
+
+    # Create Storage for documents we want to keep
+    upserted_ids = set()
+
+    # Upload documents to collection
+    batch = db.batch()
+    for doc in documents:
+        doc_id = doc["date"]
+        upserted_ids.add(doc_id)
+        doc_ref = db.collection("Test_Collection_1").document(doc_id)
+        batch.set(doc_ref, doc, merge=True)
+    batch.commit()
+
+    existing_docs = db.collection("Test_Collection_1").stream()
+    delete_batch = db.batch()
+
+    for doc in existing_docs:
+        if doc.id not in upserted_ids:
+            delete_batch.delete(doc.reference)
+
+    delete_batch.commit()  # Commit the deletions
