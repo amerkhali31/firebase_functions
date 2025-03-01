@@ -24,6 +24,7 @@ def scrape_magr():
 
     # Parse the JSON data
     json_data = response.json()
+    #print(f'DEBUGGING json_data: {json_data}')
     soup = BeautifulSoup(json_data['content']['rendered'], 'html.parser')
 
     fajr_row = soup.find('td', string=lambda t: t and 'Fajr' in t)
