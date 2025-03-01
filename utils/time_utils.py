@@ -50,7 +50,7 @@ def strip_timezone(time) -> str:
 def process_time_string(base_time, time_string):
 
     # Check if the time string is an offset from the base time
-    offset_match = re.match(r"(\d+)\s+minutes\s+after\s+prayer\s+time", time_string, re.IGNORECASE)
+    offset_match = re.match(r"(\d+)\s+minutes\s+after\s+(\w+)\s*time", time_string, re.IGNORECASE)
 
     if offset_match:
         offset_minutes = int(offset_match.group(1))  # get the number of minutes offset

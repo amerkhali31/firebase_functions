@@ -19,8 +19,7 @@ app = initialize_app()
 def accountcleanup(event: scheduler_fn.ScheduledEvent) -> None:
 
     # Get the time that we want to update firebase
-    update_time = get_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.UPDATE_DOCUMENT)
-    del update_time["last_updated"]
+    update_time = get_data(constants.FIREBASE_FUNCTIONS_COLLECTION, constants.UPDATE_DOCUMENT)['update_time']
 
     # Check if it is time to update firebase
     if compare_times(update_time):

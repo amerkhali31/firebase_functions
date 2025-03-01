@@ -62,7 +62,7 @@ FIELD2 = "time"
 TEST_2_DOCUMENT = "scrape_test"
 FIELD3 = "time"
 
-NEW_TIMES_COLLECTION = "Adhan_Times_For_Year"
+NEW_TIMES_COLLECTION = "Adhan_Times_For_Year"  # Name of the collection that holds all adhan times for the year. This will be used to populate monthly/daily times in place of aladhan api
 
 # Islamic Finder
 PDF_PATH = '../month_pdfs'
